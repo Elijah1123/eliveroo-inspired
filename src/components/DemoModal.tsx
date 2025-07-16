@@ -1,8 +1,8 @@
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Play, X, Volume2, VolumeX, Maximize, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 
 interface DemoModalProps {
   open: boolean;
@@ -10,40 +10,101 @@ interface DemoModalProps {
 }
 
 const DemoModal = ({ open, onOpenChange }: DemoModalProps) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const totalTime = 120; // 2 minutes demo
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+
+  // Demo video URL - using a sample video that includes audio
+  const videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const updateTime = () => setCurrentTime(video.currentTime);
+    const updateDuration = () => setDuration(video.duration);
+    const handleEnded = () => setIsPlaying(false);
+
+    video.addEventListener('timeupdate', updateTime);
+    video.addEventListener('loadedmetadata', updateDuration);
+    video.addEventListener('ended', handleEnded);
+
+    return () => {
+      video.removeEventListener('timeupdate', updateTime);
+      video.removeEventListener('loadedmetadata', updateDuration);
+      video.removeEventListener('ended', handleEnded);
+    };
+  }, []);
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-    if (!isPlaying) {
-      // Simulate video progress
-      const interval = setInterval(() => {
-        setCurrentTime(prev => {
-          if (prev >= totalTime) {
-            setIsPlaying(false);
-            clearInterval(interval);
-            return totalTime;
-          }
-          return prev + 1;
-        });
-      }, 1000);
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+    } else {
+      video.play();
     }
+    setIsPlaying(!isPlaying);
   };
 
   const handleRestart = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    video.currentTime = 0;
     setCurrentTime(0);
     setIsPlaying(false);
+    video.pause();
+  };
+
+  const handleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    video.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    const newVolume = parseFloat(e.target.value);
+    video.volume = newVolume;
+    setVolume(newVolume);
+    setIsMuted(newVolume === 0);
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    const newTime = parseFloat(e.target.value);
+    video.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const handleFullscreen = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    
+    if (video.requestFullscreen) {
+      video.requestFullscreen();
+    }
   };
 
   const formatTime = (seconds: number) => {
+    if (isNaN(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
+    const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progressPercentage = (currentTime / totalTime) * 100;
+  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -53,69 +114,35 @@ const DemoModal = ({ open, onOpenChange }: DemoModalProps) => {
             Deliveroo Platform Demo
           </DialogTitle>
           <DialogDescription className="text-gray-600">
-            See how easy it is to send packages with our courier service platform
+            Watch how easy it is to send packages with our courier service platform
           </DialogDescription>
         </DialogHeader>
 
         <div className="px-6 pb-6">
-          {/* Video Player Area */}
-          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl overflow-hidden mb-6">
-            <div className="aspect-video flex items-center justify-center relative">
-              {/* Simulated Video Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-orange-500/20"></div>
-              
-              {/* Demo Content Overlay */}
-              <div className="relative z-10 text-center text-white p-8">
-                <div className="mb-6">
-                  <div className="w-20 h-20 mx-auto mb-4 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                    <Play className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-2">Interactive Demo Experience</h3>
-                  <p className="text-blue-100 max-w-2xl mx-auto">
-                    Watch how users create delivery orders, track packages in real-time, 
-                    and manage their courier services with our intuitive platform.
-                  </p>
-                </div>
+          {/* Video Player */}
+          <div className="relative bg-black rounded-xl overflow-hidden mb-6">
+            <video
+              ref={videoRef}
+              className="w-full aspect-video"
+              src={videoUrl}
+              onClick={handlePlayPause}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+            >
+              Your browser does not support the video tag.
+            </video>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                    <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <span className="text-white font-bold">1</span>
-                    </div>
-                    <h4 className="font-semibold mb-2">Create Order</h4>
-                    <p className="text-sm text-blue-100">Fill in pickup and delivery details</p>
-                  </div>
-                  
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                    <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <span className="text-white font-bold">2</span>
-                    </div>
-                    <h4 className="font-semibold mb-2">Track Live</h4>
-                    <p className="text-sm text-blue-100">Monitor your package in real-time</p>
-                  </div>
-                  
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                    <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <span className="text-white font-bold">3</span>
-                    </div>
-                    <h4 className="font-semibold mb-2">Get Delivered</h4>
-                    <p className="text-sm text-blue-100">Receive confirmation and feedback</p>
-                  </div>
+            {/* Play Button Overlay */}
+            {!isPlaying && (
+              <button
+                onClick={handlePlayPause}
+                className="absolute inset-0 flex items-center justify-center z-20 bg-black/30 transition-all hover:bg-black/40"
+              >
+                <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all">
+                  <Play className="w-8 h-8 text-gray-800 ml-1" />
                 </div>
-              </div>
-
-              {/* Play Button Overlay */}
-              {!isPlaying && (
-                <button
-                  onClick={handlePlayPause}
-                  className="absolute inset-0 flex items-center justify-center z-20 bg-black/30 transition-all hover:bg-black/40"
-                >
-                  <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all">
-                    <Play className="w-8 h-8 text-gray-800 ml-1" />
-                  </div>
-                </button>
-              )}
-            </div>
+              </button>
+            )}
 
             {/* Video Controls */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
@@ -126,8 +153,7 @@ const DemoModal = ({ open, onOpenChange }: DemoModalProps) => {
                   onClick={handlePlayPause}
                   className="text-white hover:bg-white/20"
                 >
-                  <Play className={`w-4 h-4 ${isPlaying ? 'hidden' : 'block'}`} />
-                  <span className={`w-4 h-4 ${isPlaying ? 'block' : 'hidden'}`}>⏸</span>
+                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 </Button>
 
                 <Button
@@ -141,27 +167,45 @@ const DemoModal = ({ open, onOpenChange }: DemoModalProps) => {
 
                 <div className="flex-1 flex items-center space-x-2">
                   <span className="text-white text-sm">{formatTime(currentTime)}</span>
-                  <div className="flex-1 bg-white/30 rounded-full h-2">
-                    <div 
-                      className="bg-orange-500 h-full rounded-full transition-all duration-300"
-                      style={{ width: `${progressPercentage}%` }}
-                    />
-                  </div>
-                  <span className="text-white text-sm">{formatTime(totalTime)}</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max={duration || 0}
+                    value={currentTime}
+                    onChange={handleSeek}
+                    className="flex-1 h-2 bg-white/30 rounded-full appearance-none cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, #f97316 0%, #f97316 ${progressPercentage}%, rgba(255,255,255,0.3) ${progressPercentage}%, rgba(255,255,255,0.3) 100%)`
+                    }}
+                  />
+                  <span className="text-white text-sm">{formatTime(duration)}</span>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleMute}
+                    className="text-white hover:bg-white/20"
+                  >
+                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                  </Button>
+
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    className="w-16 h-2 bg-white/30 rounded-full appearance-none cursor-pointer"
+                  />
                 </div>
 
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="text-white hover:bg-white/20"
-                >
-                  {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
+                  onClick={handleFullscreen}
                   className="text-white hover:bg-white/20"
                 >
                   <Maximize className="w-4 h-4" />

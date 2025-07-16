@@ -3,6 +3,7 @@ import { useState } from "react";
 import LoginModal from "@/components/LoginModal";
 import SignupModal from "@/components/SignupModal";
 import DemoModal from "@/components/DemoModal";
+import MpesaPayment from "@/components/MpesaPayment";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
@@ -15,12 +16,21 @@ const Index = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showDemo, setShowDemo] = useState(false);
+  const [showMpesaPayment, setShowMpesaPayment] = useState(false);
+
+  const handleGetStarted = () => {
+    setShowMpesaPayment(true);
+  };
+
+  const handleSignupSuccess = () => {
+    setShowMpesaPayment(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-orange-50 to-blue-100">
       <Header onLoginClick={() => setShowLogin(true)} onSignupClick={() => setShowSignup(true)} />
       <Hero 
-        onGetStartedClick={() => setShowSignup(true)} 
+        onGetStartedClick={handleGetStarted} 
         onWatchDemoClick={() => setShowDemo(true)} 
       />
       <Features />
@@ -30,8 +40,13 @@ const Index = () => {
       <Contact />
       
       <LoginModal open={showLogin} onOpenChange={setShowLogin} />
-      <SignupModal open={showSignup} onOpenChange={setShowSignup} />
+      <SignupModal 
+        open={showSignup} 
+        onOpenChange={setShowSignup} 
+        onSignupSuccess={handleSignupSuccess}
+      />
       <DemoModal open={showDemo} onOpenChange={setShowDemo} />
+      <MpesaPayment open={showMpesaPayment} onOpenChange={setShowMpesaPayment} />
     </div>
   );
 };

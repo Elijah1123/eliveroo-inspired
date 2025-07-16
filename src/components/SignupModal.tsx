@@ -10,9 +10,10 @@ import { useToast } from "@/hooks/use-toast";
 interface SignupModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSignupSuccess?: () => void;
 }
 
-const SignupModal = ({ open, onOpenChange }: SignupModalProps) => {
+const SignupModal = ({ open, onOpenChange, onSignupSuccess }: SignupModalProps) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,11 +42,16 @@ const SignupModal = ({ open, onOpenChange }: SignupModalProps) => {
     
     toast({
       title: "Account Created",
-      description: "Welcome to Deliveroo! You can now start shipping.",
+      description: "Welcome to Deliveroo! Proceed to payment to unlock all features.",
     });
     
     setIsLoading(false);
     onOpenChange(false);
+    
+    // Trigger M-Pesa payment after successful signup
+    if (onSignupSuccess) {
+      onSignupSuccess();
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -139,7 +145,7 @@ const SignupModal = ({ open, onOpenChange }: SignupModalProps) => {
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             disabled={isLoading}
           >
-            {isLoading ? "Creating Account..." : "Create Account"}
+            {isLoading ? "Creating Account..." : "Create Account & Continue to Payment"}
           </Button>
         </form>
       </DialogContent>
