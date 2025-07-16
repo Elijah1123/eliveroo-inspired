@@ -1,12 +1,12 @@
-
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Package, Truck } from "lucide-react";
 
 interface HeroProps {
   onGetStartedClick: () => void;
+  onWatchDemoClick: () => void;
 }
 
-const Hero = ({ onGetStartedClick }: HeroProps) => {
+const Hero = ({ onGetStartedClick, onWatchDemoClick }: HeroProps) => {
   return (
     <section className="relative py-20 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-orange-500/10"></div>
@@ -43,6 +43,7 @@ const Hero = ({ onGetStartedClick }: HeroProps) => {
             </Button>
             
             <Button 
+              onClick={onWatchDemoClick}
               variant="outline" 
               size="lg"
               className="border-2 border-blue-200 hover:border-blue-300 hover:bg-blue-50 px-8 py-4 text-lg font-semibold rounded-xl"

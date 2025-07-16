@@ -8,6 +8,13 @@ interface HeaderProps {
 }
 
 const Header = ({ onLoginClick, onSignupClick }: HeaderProps) => {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <header className="bg-white/90 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -21,15 +28,24 @@ const Header = ({ onLoginClick, onSignupClick }: HeaderProps) => {
         </div>
         
         <nav className="hidden md:flex items-center space-x-6">
-          <a href="#features" className="text-gray-600 hover:text-orange-500 transition-colors">
+          <button 
+            onClick={() => scrollToSection('features')}
+            className="text-gray-600 hover:text-orange-500 transition-colors"
+          >
             Features
-          </a>
-          <a href="#pricing" className="text-gray-600 hover:text-orange-500 transition-colors">
+          </button>
+          <button 
+            onClick={() => scrollToSection('pricing')}
+            className="text-gray-600 hover:text-orange-500 transition-colors"
+          >
             Pricing
-          </a>
-          <a href="#contact" className="text-gray-600 hover:text-orange-500 transition-colors">
+          </button>
+          <button 
+            onClick={() => scrollToSection('contact')}
+            className="text-gray-600 hover:text-orange-500 transition-colors"
+          >
             Contact
-          </a>
+          </button>
         </nav>
         
         <div className="flex items-center space-x-3">
