@@ -6,6 +6,7 @@ import DemoModal from "@/components/DemoModal";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import FunctionalFeatures from "@/components/FunctionalFeatures";
 import Stats from "@/components/Stats";
 import Pricing from "@/components/Pricing";
 import Contact from "@/components/Contact";
@@ -23,6 +24,7 @@ const Index = () => {
         onWatchDemoClick={() => setShowDemo(true)} 
       />
       <Features />
+      <FunctionalFeatures />
       <Stats />
       <Pricing />
       <Contact />
