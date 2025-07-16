@@ -1,0 +1,51 @@
+
+import { Button } from "@/components/ui/button";
+import { Package } from "lucide-react";
+
+interface HeaderProps {
+  onLoginClick: () => void;
+  onSignupClick: () => void;
+}
+
+const Header = ({ onLoginClick, onSignupClick }: HeaderProps) => {
+  return (
+    <header className="bg-white/90 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+            <Package className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+            Deliveroo
+          </span>
+        </div>
+        
+        <nav className="hidden md:flex items-center space-x-6">
+          <a href="#features" className="text-gray-600 hover:text-orange-500 transition-colors">
+            Features
+          </a>
+          <a href="#pricing" className="text-gray-600 hover:text-orange-500 transition-colors">
+            Pricing
+          </a>
+          <a href="#contact" className="text-gray-600 hover:text-orange-500 transition-colors">
+            Contact
+          </a>
+        </nav>
+        
+        <div className="flex items-center space-x-3">
+          <Button variant="ghost" onClick={onLoginClick} className="hover:bg-orange-50">
+            Login
+          </Button>
+          <Button 
+            onClick={onSignupClick}
+            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
+          >
+            Get Started
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
