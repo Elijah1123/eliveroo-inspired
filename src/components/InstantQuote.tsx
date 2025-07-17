@@ -30,6 +30,9 @@ const InstantQuote = () => {
     { value: "urgent", label: "Urgent Delivery", multiplier: 2, time: "30-60 mins" }
   ];
 
+  // Exchange rate: 1 USD = 150 KSh (this could be dynamic in a real app)
+  const USD_TO_KSH_RATE = 150;
+
   const calculateQuote = () => {
     if (!formData.weightCategory || !formData.distance || !formData.urgency) return;
 
@@ -50,6 +53,14 @@ const InstantQuote = () => {
 
   const handleProceedToPayment = () => {
     setShowMpesaPayment(true);
+  };
+
+  // Convert USD to KSh for M-Pesa payment
+  const getKshAmount = () => {
+    if (quote) {
+      return Math.round(quote * USD_TO_KSH_RATE).toString();
+    }
+    return "0";
   };
 
   return (
@@ -123,7 +134,10 @@ const InstantQuote = () => {
             <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-gray-600">Estimated Price:</span>
-                <span className="text-2xl font-bold text-green-600">${quote}</span>
+                <div className="text-right">
+                  <span className="text-2xl font-bold text-green-600">${quote}</span>
+                  <div className="text-sm text-gray-500">≈ KSh {getKshAmount()}</div>
+                </div>
               </div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-gray-600">Delivery Time:</span>
@@ -137,7 +151,7 @@ const InstantQuote = () => {
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
               >
                 <CreditCard className="w-4 h-4 mr-2" />
-                Proceed to Payment - ${quote}
+                Pay KSh {getKshAmount()} via M-Pesa
               </Button>
             </div>
           )}
@@ -147,7 +161,7 @@ const InstantQuote = () => {
       <MpesaPayment 
         open={showMpesaPayment} 
         onOpenChange={setShowMpesaPayment}
-        amount={quote ? (quote * 100).toString() : "0"} // Convert to KSh (assuming 1 USD = 100 KSh)
+        amount={getKshAmount()}
       />
     </>
   );
