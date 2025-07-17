@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -10,11 +9,12 @@ import { useToast } from "@/hooks/use-toast";
 interface MpesaPaymentProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  amount?: string;
 }
 
-const MpesaPayment = ({ open, onOpenChange }: MpesaPaymentProps) => {
+const MpesaPayment = ({ open, onOpenChange, amount: initialAmount }: MpesaPaymentProps) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [amount, setAmount] = useState("799");
+  const [amount, setAmount] = useState(initialAmount || "799");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStep, setPaymentStep] = useState(1);
   const { toast } = useToast();
@@ -47,7 +47,7 @@ const MpesaPayment = ({ open, onOpenChange }: MpesaPaymentProps) => {
       setPaymentStep(4);
       toast({
         title: "Payment Successful",
-        description: "Welcome to Deliveroo Premium! You can now access all features.",
+        description: "Your delivery has been booked successfully!",
       });
     }, 8000);
   };
@@ -57,6 +57,13 @@ const MpesaPayment = ({ open, onOpenChange }: MpesaPaymentProps) => {
     setPhoneNumber("");
     setIsProcessing(false);
   };
+
+  // Update amount when prop changes
+  useState(() => {
+    if (initialAmount) {
+      setAmount(initialAmount);
+    }
+  });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -71,7 +78,7 @@ const MpesaPayment = ({ open, onOpenChange }: MpesaPaymentProps) => {
             M-Pesa Payment
           </DialogTitle>
           <DialogDescription>
-            Complete your Deliveroo Premium subscription payment
+            {initialAmount ? "Complete your delivery payment" : "Complete your Deliveroo Premium subscription payment"}
           </DialogDescription>
         </DialogHeader>
 
@@ -80,10 +87,14 @@ const MpesaPayment = ({ open, onOpenChange }: MpesaPaymentProps) => {
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="flex items-center space-x-3 mb-3">
                 <CreditCard className="w-5 h-5 text-green-600" />
-                <span className="font-semibold text-green-800">Premium Plan</span>
+                <span className="font-semibold text-green-800">
+                  {initialAmount ? "Delivery Payment" : "Premium Plan"}
+                </span>
               </div>
               <div className="text-2xl font-bold text-green-800">KSh {amount}</div>
-              <div className="text-sm text-green-600">Monthly subscription</div>
+              <div className="text-sm text-green-600">
+                {initialAmount ? "One-time delivery payment" : "Monthly subscription"}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -155,7 +166,7 @@ const MpesaPayment = ({ open, onOpenChange }: MpesaPaymentProps) => {
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
             <h3 className="text-lg font-semibold text-green-600">Payment Successful!</h3>
             <p className="text-gray-600">
-              Thank you for subscribing to Deliveroo Premium
+              {initialAmount ? "Your delivery has been booked successfully!" : "Thank you for subscribing to Deliveroo Premium"}
             </p>
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <p className="text-sm text-green-800">
@@ -169,7 +180,7 @@ const MpesaPayment = ({ open, onOpenChange }: MpesaPaymentProps) => {
               onClick={() => onOpenChange(false)}
               className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
             >
-              Continue to Dashboard
+              {initialAmount ? "Continue" : "Continue to Dashboard"}
             </Button>
           </div>
         )}
