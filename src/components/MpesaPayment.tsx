@@ -116,8 +116,8 @@ const MpesaPayment = ({ open, onOpenChange, amount: initialAmount }: MpesaPaymen
                 id="amount"
                 type="number"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="text-lg font-semibold"
+                readOnly
+                className="text-lg font-semibold bg-gray-50 cursor-not-allowed"
               />
             </div>
 
