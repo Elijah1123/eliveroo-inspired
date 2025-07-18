@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
-import { Package } from "lucide-react";
+import { Package, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface HeaderProps {
   onLoginClick: () => void;
@@ -8,11 +9,17 @@ interface HeaderProps {
 }
 
 const Header = ({ onLoginClick, onSignupClick }: HeaderProps) => {
+  const { user, isAuthenticated, logout } = useAuth();
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   return (
@@ -49,15 +56,31 @@ const Header = ({ onLoginClick, onSignupClick }: HeaderProps) => {
         </nav>
         
         <div className="flex items-center space-x-3">
-          <Button variant="ghost" onClick={onLoginClick} className="hover:bg-orange-50">
-            Login
-          </Button>
-          <Button 
-            onClick={onSignupClick}
-            className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
-          >
-            Get Started
-          </Button>
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="text-red-600 border-red-200 hover:bg-red-50"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={onLoginClick} className="hover:bg-orange-50">
+                Login
+              </Button>
+              <Button 
+                onClick={onSignupClick}
+                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
+              >
+                Get Started
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

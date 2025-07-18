@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Package, MapPin, Clock, Truck } from "lucide-react";
@@ -7,9 +7,22 @@ import DashboardHeader from "@/components/DashboardHeader";
 import CreateOrderModal from "@/components/CreateOrderModal";
 import OrderCard from "@/components/OrderCard";
 import MapView from "@/components/MapView";
+import AuthGuard from "@/components/AuthGuard";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [showCreateOrder, setShowCreateOrder] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  
+  // Redirect to home if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
   const [orders, setOrders] = useState([
     {
       id: "DEL001",
@@ -61,6 +74,10 @@ const Dashboard = () => {
       bgColor: "bg-green-100"
     }
   ];
+
+  if (!isAuthenticated) {
+    return null; // or loading spinner
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-orange-50 to-blue-100">

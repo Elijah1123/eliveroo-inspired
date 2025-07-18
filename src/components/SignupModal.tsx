@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Package, Mail, Lock, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SignupModalProps {
   open: boolean;
@@ -22,6 +23,7 @@ const SignupModal = ({ open, onOpenChange, onSignupSuccess }: SignupModalProps) 
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +42,13 @@ const SignupModal = ({ open, onOpenChange, onSignupSuccess }: SignupModalProps) 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Mock successful signup and login
+    login({
+      id: "1",
+      name: formData.name,
+      email: formData.email
+    });
+    
     toast({
       title: "Account Created",
       description: "Welcome to Deliveroo! Proceed to payment to unlock all features.",
@@ -47,6 +56,14 @@ const SignupModal = ({ open, onOpenChange, onSignupSuccess }: SignupModalProps) 
     
     setIsLoading(false);
     onOpenChange(false);
+    
+    // Reset form
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: ""
+    });
     
     // Trigger M-Pesa payment after successful signup
     if (onSignupSuccess) {

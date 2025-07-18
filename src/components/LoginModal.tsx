@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Package, Mail, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LoginModalProps {
   open: boolean;
@@ -17,6 +18,7 @@ const LoginModal = ({ open, onOpenChange }: LoginModalProps) => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +27,13 @@ const LoginModal = ({ open, onOpenChange }: LoginModalProps) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Mock successful login
+    login({
+      id: "1",
+      name: "John Doe",
+      email: email
+    });
+    
     toast({
       title: "Login Successful",
       description: "Welcome back to Deliveroo!",
@@ -32,6 +41,8 @@ const LoginModal = ({ open, onOpenChange }: LoginModalProps) => {
     
     setIsLoading(false);
     onOpenChange(false);
+    setEmail("");
+    setPassword("");
   };
 
   return (
