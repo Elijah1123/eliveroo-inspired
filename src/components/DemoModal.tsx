@@ -1,8 +1,18 @@
-
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Play, Pause, Volume2, VolumeX, Maximize, RotateCcw } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  User, 
+  MapPin, 
+  Package, 
+  CreditCard, 
+  Truck, 
+  CheckCircle,
+  ArrowRight,
+  Phone,
+  Clock,
+  Shield
+} from "lucide-react";
 
 interface DemoModalProps {
   open: boolean;
@@ -10,245 +20,198 @@ interface DemoModalProps {
 }
 
 const DemoModal = ({ open, onOpenChange }: DemoModalProps) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
-
-  // Demo video URL - using a sample video that includes audio
-  const videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const updateTime = () => setCurrentTime(video.currentTime);
-    const updateDuration = () => setDuration(video.duration);
-    const handleEnded = () => setIsPlaying(false);
-
-    video.addEventListener('timeupdate', updateTime);
-    video.addEventListener('loadedmetadata', updateDuration);
-    video.addEventListener('ended', handleEnded);
-
-    return () => {
-      video.removeEventListener('timeupdate', updateTime);
-      video.removeEventListener('loadedmetadata', updateDuration);
-      video.removeEventListener('ended', handleEnded);
-    };
-  }, []);
-
-  const handlePlayPause = () => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    if (isPlaying) {
-      video.pause();
-    } else {
-      video.play();
+  const steps = [
+    {
+      step: 1,
+      title: "Create Your Account",
+      description: "Sign up with your email and phone number to get started",
+      icon: User,
+      details: [
+        "Click 'Sign Up' in the top right corner",
+        "Enter your name, email, and phone number",
+        "Verify your phone number with SMS code",
+        "Complete your profile setup"
+      ]
+    },
+    {
+      step: 2,
+      title: "Enter Pickup & Delivery Details",
+      description: "Specify where to pick up and deliver your package",
+      icon: MapPin,
+      details: [
+        "Enter pickup address or select from map",
+        "Add delivery address with specific instructions",
+        "Include recipient contact information",
+        "Set preferred pickup and delivery times"
+      ]
+    },
+    {
+      step: 3,
+      title: "Package Information",
+      description: "Describe your package for accurate pricing and handling",
+      icon: Package,
+      details: [
+        "Select package size (Small, Medium, Large)",
+        "Enter weight and dimensions",
+        "Choose package type (Documents, Electronics, etc.)",
+        "Add special handling instructions if needed"
+      ]
+    },
+    {
+      step: 4,
+      title: "Choose Delivery Speed",
+      description: "Select delivery option that fits your timeline",
+      icon: Clock,
+      details: [
+        "Same Day Delivery - Within 3-6 hours",
+        "Express Delivery - Within 24 hours",
+        "Standard Delivery - 1-2 business days",
+        "Scheduled Delivery - Pick your preferred time"
+      ]
+    },
+    {
+      step: 5,
+      title: "Secure Payment",
+      description: "Pay safely with M-Pesa or other payment methods",
+      icon: CreditCard,
+      details: [
+        "Review your order summary and total cost",
+        "Choose M-Pesa as payment method",
+        "Enter your M-Pesa phone number",
+        "Complete payment through M-Pesa prompt"
+      ]
+    },
+    {
+      step: 6,
+      title: "Real-Time Tracking",
+      description: "Track your package every step of the way",
+      icon: Truck,
+      details: [
+        "Get instant order confirmation",
+        "Track courier location on live map",
+        "Receive SMS updates at each milestone",
+        "Contact courier directly if needed"
+      ]
+    },
+    {
+      step: 7,
+      title: "Delivery Confirmation",
+      description: "Confirm successful delivery and rate your experience",
+      icon: CheckCircle,
+      details: [
+        "Receive delivery notification",
+        "Confirm package received in good condition",
+        "Rate your courier and overall experience",
+        "Download receipt for your records"
+      ]
     }
-    setIsPlaying(!isPlaying);
-  };
+  ];
 
-  const handleRestart = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    video.currentTime = 0;
-    setCurrentTime(0);
-    setIsPlaying(false);
-    video.pause();
-  };
-
-  const handleMute = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    video.muted = !isMuted;
-    setIsMuted(!isMuted);
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    const newVolume = parseFloat(e.target.value);
-    video.volume = newVolume;
-    setVolume(newVolume);
-    setIsMuted(newVolume === 0);
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    const newTime = parseFloat(e.target.value);
-    video.currentTime = newTime;
-    setCurrentTime(newTime);
-  };
-
-  const handleFullscreen = () => {
-    const video = videoRef.current;
-    if (!video) return;
-    
-    if (video.requestFullscreen) {
-      video.requestFullscreen();
+  const features = [
+    {
+      title: "24/7 Customer Support",
+      description: "Get help anytime via chat, phone, or email",
+      icon: Phone
+    },
+    {
+      title: "Secure & Insured",
+      description: "All packages are insured and tracked for your peace of mind",
+      icon: Shield
+    },
+    {
+      title: "Fast & Reliable",
+      description: "Same-day delivery with 99.8% on-time delivery rate",
+      icon: Truck
     }
-  };
-
-  const formatTime = (seconds: number) => {
-    if (isNaN(seconds)) return "0:00";
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+  ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl w-full max-h-[90vh] p-0 overflow-hidden">
+      <DialogContent className="max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader className="px-6 pt-6 pb-4">
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-            Deliveroo Platform Demo
+          <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
+            How to Use Deliveroo - Step by Step Guide
           </DialogTitle>
-          <DialogDescription className="text-gray-600">
-            Watch how easy it is to send packages with our courier service platform
+          <DialogDescription className="text-gray-600 text-lg">
+            Follow these simple steps to send your package with Deliveroo courier service
           </DialogDescription>
         </DialogHeader>
 
         <div className="px-6 pb-6">
-          {/* Video Player */}
-          <div className="relative bg-black rounded-xl overflow-hidden mb-6">
-            <video
-              ref={videoRef}
-              className="w-full aspect-video"
-              src={videoUrl}
-              onClick={handlePlayPause}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-            >
-              Your browser does not support the video tag.
-            </video>
-
-            {/* Play Button Overlay */}
-            {!isPlaying && (
-              <button
-                onClick={handlePlayPause}
-                className="absolute inset-0 flex items-center justify-center z-20 bg-black/30 transition-all hover:bg-black/40"
-              >
-                <div className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center hover:bg-white transition-all">
-                  <Play className="w-8 h-8 text-gray-800 ml-1" />
-                </div>
-              </button>
-            )}
-
-            {/* Video Controls */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handlePlayPause}
-                  className="text-white hover:bg-white/20"
-                >
-                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleRestart}
-                  className="text-white hover:bg-white/20"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                </Button>
-
-                <div className="flex-1 flex items-center space-x-2">
-                  <span className="text-white text-sm">{formatTime(currentTime)}</span>
-                  <input
-                    type="range"
-                    min="0"
-                    max={duration || 0}
-                    value={currentTime}
-                    onChange={handleSeek}
-                    className="flex-1 h-2 bg-white/30 rounded-full appearance-none cursor-pointer"
-                    style={{
-                      background: `linear-gradient(to right, #f97316 0%, #f97316 ${progressPercentage}%, rgba(255,255,255,0.3) ${progressPercentage}%, rgba(255,255,255,0.3) 100%)`
-                    }}
-                  />
-                  <span className="text-white text-sm">{formatTime(duration)}</span>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleMute}
-                    className="text-white hover:bg-white/20"
-                  >
-                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                  </Button>
-
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value={isMuted ? 0 : volume}
-                    onChange={handleVolumeChange}
-                    className="w-16 h-2 bg-white/30 rounded-full appearance-none cursor-pointer"
-                  />
-                </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleFullscreen}
-                  className="text-white hover:bg-white/20"
-                >
-                  <Maximize className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+          {/* Steps Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {steps.map((step, index) => (
+              <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-all duration-300">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-blue-500 to-orange-500 rounded-xl flex items-center justify-center">
+                      <step.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="px-2 py-1 bg-gradient-to-r from-blue-100 to-orange-100 text-blue-800 text-xs font-semibold rounded-full">
+                          Step {step.step}
+                        </span>
+                      </div>
+                      <CardTitle className="text-lg font-semibold text-gray-800">
+                        {step.title}
+                      </CardTitle>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm mt-2">{step.description}</p>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  <ul className="space-y-2">
+                    {step.details.map((detail, detailIndex) => (
+                      <li key={detailIndex} className="flex items-start space-x-2 text-sm text-gray-700">
+                        <ArrowRight className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-          {/* Demo Features */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h4 className="font-semibold text-gray-800">What you'll see in this demo:</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span>Complete order creation process</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                  <span>Real-time tracking interface</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span>Interactive map features</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span>Dashboard management tools</span>
-                </li>
-              </ul>
+          {/* Key Features */}
+          <div className="border-t pt-8">
+            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+              Why Choose Deliveroo?
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {features.map((feature, index) => (
+                <div key={index} className="text-center p-6 bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl">
+                  <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <feature.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h4 className="font-semibold text-gray-800 mb-2">{feature.title}</h4>
+                  <p className="text-gray-600 text-sm">{feature.description}</p>
+                </div>
+              ))}
             </div>
 
-            <div className="space-y-4">
-              <h4 className="font-semibold text-gray-800">Ready to get started?</h4>
-              <p className="text-gray-600 text-sm">
-                Join thousands of satisfied customers who trust Deliveroo for their courier needs.
+            {/* Call to Action */}
+            <div className="text-center bg-gradient-to-r from-blue-50 to-orange-50 rounded-2xl p-8">
+              <h4 className="text-2xl font-bold text-gray-800 mb-4">
+                Ready to Send Your First Package?
+              </h4>
+              <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+                Join thousands of satisfied customers who trust Deliveroo for fast, secure, and reliable delivery services across the country.
               </p>
-              <div className="flex space-x-3">
-                <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
-                  Start Free Trial
+              <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                <Button 
+                  onClick={() => onOpenChange(false)}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3"
+                >
+                  Start Shipping Now
                 </Button>
-                <Button variant="outline">
-                  Contact Sales
+                <Button 
+                  variant="outline" 
+                  className="border-blue-200 hover:border-blue-300 hover:bg-blue-50 px-8 py-3"
+                >
+                  Contact Support
                 </Button>
               </div>
             </div>

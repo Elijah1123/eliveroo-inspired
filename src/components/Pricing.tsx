@@ -2,8 +2,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Check, Package, Truck, Zap } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
-const Pricing = () => {
+interface PricingProps {
+  onGetStartedClick?: () => void;
+}
+
+const Pricing = ({ onGetStartedClick }: PricingProps) => {
+  const { isAuthenticated } = useAuth();
+
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      // Redirect to dashboard or show payment modal
+      window.location.href = '/dashboard';
+    } else {
+      onGetStartedClick?.();
+    }
+  };
   const pricingPlans = [
     {
       name: "Basic",
@@ -102,13 +117,14 @@ const Pricing = () => {
                 </ul>
 
                 <Button 
+                  onClick={handleGetStarted}
                   className={`w-full ${
                     plan.popular 
                       ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700' 
                       : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
                   } text-white`}
                 >
-                  Get Started
+                  {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
                 </Button>
               </CardContent>
             </Card>

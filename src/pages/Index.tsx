@@ -50,7 +50,7 @@ const Index = () => {
       <Features />
       <FunctionalFeatures onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
       <Stats />
-      <Pricing />
+      <Pricing onGetStartedClick={handleGetStarted} />
       <Contact />
       
       <LoginModal open={showLogin} onOpenChange={setShowLogin} />
