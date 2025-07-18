@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ interface MpesaPaymentProps {
 
 const MpesaPayment = ({ open, onOpenChange, amount: initialAmount }: MpesaPaymentProps) => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [amount, setAmount] = useState(initialAmount || "799");
+  const [amount, setAmount] = useState(initialAmount || "0");
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentStep, setPaymentStep] = useState(1);
   const { toast } = useToast();
@@ -59,11 +59,11 @@ const MpesaPayment = ({ open, onOpenChange, amount: initialAmount }: MpesaPaymen
   };
 
   // Update amount when prop changes
-  useState(() => {
+  useEffect(() => {
     if (initialAmount) {
       setAmount(initialAmount);
     }
-  });
+  }, [initialAmount]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
