@@ -21,15 +21,20 @@ const Index = () => {
   const { isAuthenticated } = useAuth();
 
   const handleGetStarted = () => {
-    if (isAuthenticated) {
-      setShowMpesaPayment(true);
-    } else {
+    // Scroll to pricing section to show shipping options
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    if (!isAuthenticated) {
       setShowSignup(true);
     }
   };
 
   const handleSignupSuccess = () => {
-    setShowMpesaPayment(true);
+    // After signup, just close modal - user can navigate to shipping options
+    setShowSignup(false);
   };
 
   const handleLoginClick = () => {
@@ -50,7 +55,9 @@ const Index = () => {
       <Features />
       <FunctionalFeatures onLoginClick={handleLoginClick} onSignupClick={handleSignupClick} />
       <Stats />
-      <Pricing onGetStartedClick={handleGetStarted} />
+      <div id="pricing">
+        <Pricing onGetStartedClick={handleGetStarted} />
+      </div>
       <Contact />
       
       <LoginModal open={showLogin} onOpenChange={setShowLogin} />
