@@ -10,9 +10,10 @@ interface MpesaPaymentProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   amount?: string;
+  onPaymentSuccess?: () => void;
 }
 
-const MpesaPayment = ({ open, onOpenChange, amount: initialAmount }: MpesaPaymentProps) => {
+const MpesaPayment = ({ open, onOpenChange, amount: initialAmount, onPaymentSuccess }: MpesaPaymentProps) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [amount, setAmount] = useState(initialAmount || "0");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -49,6 +50,9 @@ const MpesaPayment = ({ open, onOpenChange, amount: initialAmount }: MpesaPaymen
         title: "Payment Successful",
         description: "Your delivery has been booked successfully!",
       });
+      if (onPaymentSuccess) {
+        onPaymentSuccess();
+      }
     }, 8000);
   };
 
@@ -162,7 +166,10 @@ const MpesaPayment = ({ open, onOpenChange, amount: initialAmount }: MpesaPaymen
               </p>
             </div>
             <Button 
-              onClick={() => onOpenChange(false)}
+              onClick={() => {
+                onOpenChange(false);
+                resetPayment();
+              }}
               className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
             >
               {initialAmount ? "Continue" : "Continue to Dashboard"}

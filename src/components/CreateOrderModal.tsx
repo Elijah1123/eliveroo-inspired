@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { MapPin, Package, Scale } from "lucide-react";
+import { MapPin, Package, Scale, CreditCard, Calculator } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import MpesaPayment from "./MpesaPayment";
 
 interface CreateOrderModalProps {
   open: boolean;
@@ -21,33 +22,77 @@ const CreateOrderModal = ({ open, onOpenChange, onOrderCreated }: CreateOrderMod
     destination: "",
     weight: "",
     weightCategory: "",
+    urgency: "standard",
+    distance: "",
     description: "",
     recipientName: "",
     recipientPhone: ""
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [quote, setQuote] = useState<number | null>(null);
+  const [showMpesaPayment, setShowMpesaPayment] = useState(false);
   const { toast } = useToast();
 
   const weightCategories = [
-    { value: "light", label: "Light (0-1kg) - $5", range: "0-1kg" },
-    { value: "medium", label: "Medium (1-5kg) - $10", range: "1-5kg" },
-    { value: "heavy", label: "Heavy (5-15kg) - $20", range: "5-15kg" },
-    { value: "extra-heavy", label: "Extra Heavy (15kg+) - $35", range: "15kg+" }
+    { value: "light", label: "Light (0-1kg)", basePrice: 5, range: "0-1kg" },
+    { value: "medium", label: "Medium (1-5kg)", basePrice: 10, range: "1-5kg" },
+    { value: "heavy", label: "Heavy (5-15kg)", basePrice: 20, range: "5-15kg" },
+    { value: "extra-heavy", label: "Extra Heavy (15kg+)", basePrice: 35, range: "15kg+" }
   ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+  const urgencyOptions = [
+    { value: "standard", label: "Standard Delivery", multiplier: 1, time: "2-4 hours" },
+    { value: "express", label: "Express Delivery", multiplier: 1.5, time: "1-2 hours" },
+    { value: "urgent", label: "Urgent Delivery", multiplier: 2, time: "30-60 mins" }
+  ];
+
+  const USD_TO_KSH_RATE = 150;
+
+  const calculateQuote = () => {
+    if (!formData.weightCategory || !formData.distance || !formData.urgency) return;
+
+    const weight = weightCategories.find(w => w.value === formData.weightCategory);
+    const urgency = urgencyOptions.find(u => u.value === formData.urgency);
+    const distance = parseFloat(formData.distance);
+
+    if (weight && urgency && distance) {
+      const basePrice = weight.basePrice;
+      const distancePrice = distance * 0.5; // $0.5 per km
+      const urgencyMultiplier = urgency.multiplier;
+      
+      const totalPrice = (basePrice + distancePrice) * urgencyMultiplier;
+      setQuote(Math.round(totalPrice * 100) / 100);
+    }
+  };
+
+  const getKshAmount = () => {
+    if (quote) {
+      return Math.round(quote * USD_TO_KSH_RATE).toString();
+    }
+    return "0";
+  };
+
+  const handleProceedToPayment = () => {
+    if (!quote) {
+      toast({
+        title: "Calculate Quote First",
+        description: "Please calculate the delivery quote before proceeding to payment.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setShowMpesaPayment(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    // Create order after successful payment
     const newOrder = {
       id: `DEL${String(Date.now()).slice(-3)}`,
-      status: "Pending",
+      status: "Paid",
       pickup: formData.pickup,
       destination: formData.destination,
       weight: formData.weight,
+      amount: quote,
       createdAt: new Date().toISOString(),
       estimatedDelivery: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString()
     };
@@ -55,11 +100,10 @@ const CreateOrderModal = ({ open, onOpenChange, onOrderCreated }: CreateOrderMod
     onOrderCreated(newOrder);
     
     toast({
-      title: "Order Created",
-      description: `Your delivery order ${newOrder.id} has been created successfully.`,
+      title: "Order Created & Paid",
+      description: `Your delivery order ${newOrder.id} has been created and paid successfully.`,
     });
     
-    setIsLoading(false);
     onOpenChange(false);
     
     // Reset form
@@ -68,10 +112,13 @@ const CreateOrderModal = ({ open, onOpenChange, onOrderCreated }: CreateOrderMod
       destination: "",
       weight: "",
       weightCategory: "",
+      urgency: "standard",
+      distance: "",
       description: "",
       recipientName: "",
       recipientPhone: ""
     });
+    setQuote(null);
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -90,7 +137,7 @@ const CreateOrderModal = ({ open, onOpenChange, onOrderCreated }: CreateOrderMod
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="pickup">Pickup Address</Label>
@@ -155,6 +202,40 @@ const CreateOrderModal = ({ open, onOpenChange, onOrderCreated }: CreateOrderMod
               </div>
             </div>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="distance">Distance (km)</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Input
+                  id="distance"
+                  placeholder="Enter distance"
+                  value={formData.distance}
+                  onChange={(e) => handleInputChange("distance", e.target.value)}
+                  className="pl-10"
+                  type="number"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="urgency">Delivery Speed</Label>
+              <Select value={formData.urgency} onValueChange={(value) => handleInputChange("urgency", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select delivery speed" />
+                </SelectTrigger>
+                <SelectContent>
+                  {urgencyOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -190,21 +271,52 @@ const CreateOrderModal = ({ open, onOpenChange, onOrderCreated }: CreateOrderMod
               rows={3}
             />
           </div>
+
+          <div className="space-y-4">
+            <Button 
+              type="button"
+              onClick={calculateQuote}
+              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+            >
+              <Calculator className="w-4 h-4 mr-2" />
+              Calculate Delivery Quote
+            </Button>
+
+            {quote !== null && (
+              <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-600">Total Amount:</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-green-600">${quote}</span>
+                    <div className="text-sm text-gray-500">≈ KSh {getKshAmount()}</div>
+                  </div>
+                </div>
+                <Button 
+                  type="button"
+                  onClick={handleProceedToPayment}
+                  className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white mt-2"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Pay KSh {getKshAmount()} via M-Pesa
+                </Button>
+              </div>
+            )}
+          </div>
           
           <div className="flex justify-end space-x-3 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
-              disabled={isLoading}
-            >
-              {isLoading ? "Creating..." : "Create Order"}
-            </Button>
           </div>
-        </form>
+        </div>
       </DialogContent>
+
+      <MpesaPayment 
+        open={showMpesaPayment} 
+        onOpenChange={setShowMpesaPayment}
+        amount={getKshAmount()}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </Dialog>
   );
 };
