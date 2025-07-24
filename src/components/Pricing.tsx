@@ -19,46 +19,45 @@ const Pricing = ({ onGetStartedClick }: PricingProps) => {
       onGetStartedClick?.();
     }
   };
-  const pricingPlans = [
+  const serviceTiers = [
     {
-      name: "Basic",
-      price: "$9.99",
-      description: "Perfect for occasional deliveries",
+      name: "Standard Shipping",
+      description: "Reliable delivery for everyday needs",
       icon: Package,
       features: [
-        "Up to 5 deliveries per month",
-        "Standard delivery speed",
-        "Basic tracking",
-        "Email support"
+        "3-5 business days delivery",
+        "Package tracking included",
+        "Standard handling",
+        "Email notifications",
+        "Insurance up to $100"
       ],
       popular: false
     },
     {
-      name: "Pro",
-      price: "$19.99",
-      description: "Great for regular users",
+      name: "Express Shipping",
+      description: "Fast delivery when you need it",
       icon: Truck,
       features: [
-        "Up to 25 deliveries per month",
-        "Fast delivery options",
-        "Real-time tracking",
-        "Priority support",
-        "Route optimization"
+        "1-2 business days delivery",
+        "Real-time GPS tracking",
+        "Priority handling",
+        "SMS & email updates",
+        "Insurance up to $500",
+        "Signature confirmation"
       ],
       popular: true
     },
     {
-      name: "Enterprise",
-      price: "$49.99",
-      description: "For businesses and high volume",
+      name: "Premium Shipping",
+      description: "Ultimate service for urgent deliveries",
       icon: Zap,
       features: [
-        "Unlimited deliveries",
-        "Express delivery options",
-        "Advanced analytics",
-        "24/7 dedicated support",
-        "Custom integrations",
-        "API access"
+        "Same day or next day delivery",
+        "Live tracking & updates",
+        "White glove service",
+        "Dedicated support agent",
+        "Insurance up to $1000",
+        "Special handling options"
       ],
       popular: false
     }
@@ -69,22 +68,22 @@ const Pricing = ({ onGetStartedClick }: PricingProps) => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-orange-500 bg-clip-text text-transparent">
-            Simple, Transparent Pricing
+            Choose Your Shipping Service
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Choose the perfect plan for your delivery needs. All plans include our core features with no hidden fees.
+            Select the delivery speed that fits your needs. Pay only for what you ship with transparent pricing.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {pricingPlans.map((plan, index) => (
+          {serviceTiers.map((tier, index) => (
             <Card 
               key={index} 
               className={`relative overflow-hidden transition-all duration-300 hover:shadow-xl ${
-                plan.popular ? 'border-orange-500 border-2 scale-105' : 'border-gray-200'
+                tier.popular ? 'border-orange-500 border-2 scale-105' : 'border-gray-200'
               }`}
             >
-              {plan.popular && (
+              {tier.popular && (
                 <div className="absolute top-0 right-0 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-1 text-sm font-semibold rounded-bl-lg">
                   Most Popular
                 </div>
@@ -92,23 +91,27 @@ const Pricing = ({ onGetStartedClick }: PricingProps) => {
               
               <CardHeader className="text-center pb-4">
                 <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center ${
-                  plan.popular ? 'bg-orange-100' : 'bg-blue-100'
+                  tier.popular ? 'bg-orange-100' : 'bg-blue-100'
                 }`}>
-                  <plan.icon className={`w-8 h-8 ${
-                    plan.popular ? 'text-orange-600' : 'text-blue-600'
+                  <tier.icon className={`w-8 h-8 ${
+                    tier.popular ? 'text-orange-600' : 'text-blue-600'
                   }`} />
                 </div>
-                <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                <CardDescription className="text-gray-600">{plan.description}</CardDescription>
+                <CardTitle className="text-2xl font-bold">{tier.name}</CardTitle>
+                <CardDescription className="text-gray-600">{tier.description}</CardDescription>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-gray-600">/month</span>
+                  <div className="text-lg font-semibold text-blue-600">
+                    Pay per shipment
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Based on weight, distance & speed
+                  </div>
                 </div>
               </CardHeader>
 
               <CardContent className="pt-0">
                 <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, featureIndex) => (
+                  {tier.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center space-x-3">
                       <Check className="w-5 h-5 text-green-500" />
                       <span className="text-gray-700">{feature}</span>
@@ -119,12 +122,12 @@ const Pricing = ({ onGetStartedClick }: PricingProps) => {
                 <Button 
                   onClick={handleGetStarted}
                   className={`w-full ${
-                    plan.popular 
+                    tier.popular 
                       ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700' 
                       : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
                   } text-white`}
                 >
-                  {isAuthenticated ? 'Go to Dashboard' : 'Get Started'}
+                  {isAuthenticated ? 'Start Shipping Now' : 'Start Shipping Now'}
                 </Button>
               </CardContent>
             </Card>
@@ -132,9 +135,9 @@ const Pricing = ({ onGetStartedClick }: PricingProps) => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-gray-600 mb-4">All plans include a 14-day free trial. No credit card required.</p>
+          <p className="text-gray-600 mb-4">Get instant quotes and track your packages in real-time. No hidden fees.</p>
           <Button variant="outline" className="border-blue-200 hover:border-blue-300 hover:bg-blue-50">
-            Compare All Features
+            Get Instant Quote
           </Button>
         </div>
       </div>
