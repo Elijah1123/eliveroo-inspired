@@ -162,7 +162,7 @@ const SignupModal = ({ open, onOpenChange, onSignupSuccess }: SignupModalProps) 
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             disabled={isLoading}
           >
-            {isLoading ? "Creating Account..." : "Create Account & Continue to Payment"}
+            {isLoading ? "Creating Account..." : "Create Account"}
           </Button>
         </form>
       </DialogContent>
