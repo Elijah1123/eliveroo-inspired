@@ -21,9 +21,11 @@ interface Order {
 
 interface OrderCardProps {
   order: Order;
+  onEditDestination?: (orderId: string, newDestination: string) => void;
+  onCancelOrder?: (orderId: string) => void;
 }
 
-const OrderCard = ({ order }: OrderCardProps) => {
+const OrderCard = ({ order, onEditDestination, onCancelOrder }: OrderCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Delivered":
@@ -39,6 +41,19 @@ const OrderCard = ({ order }: OrderCardProps) => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
+  };
+
+  const handleEditDestination = () => {
+    const newDestination = prompt("Enter new destination:", order.destination);
+    if (newDestination && newDestination.trim() && newDestination !== order.destination) {
+      onEditDestination?.(order.id, newDestination.trim());
+    }
+  };
+
+  const handleCancelOrder = () => {
+    if (confirm(`Are you sure you want to cancel order ${order.id}?`)) {
+      onCancelOrder?.(order.id);
+    }
   };
 
   return (
@@ -63,11 +78,11 @@ const OrderCard = ({ order }: OrderCardProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleEditDestination}>
               <Edit className="mr-2 h-4 w-4" />
               Edit Destination
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
+            <DropdownMenuItem className="text-red-600" onClick={handleCancelOrder}>
               <Trash2 className="mr-2 h-4 w-4" />
               Cancel Order
             </DropdownMenuItem>
