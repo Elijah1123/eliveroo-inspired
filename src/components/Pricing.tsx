@@ -110,7 +110,7 @@ const Pricing = ({ onGetStartedClick }: PricingProps) => {
               </CardHeader>
 
               <CardContent className="pt-0">
-                <ul className="space-y-3 mb-6">
+                <ul className="space-y-3">
                   {tier.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-center space-x-3">
                       <Check className="w-5 h-5 text-green-500" />
@@ -118,24 +118,20 @@ const Pricing = ({ onGetStartedClick }: PricingProps) => {
                     </li>
                   ))}
                 </ul>
-
-                <Button 
-                  onClick={handleGetStarted}
-                  className={`w-full ${
-                    tier.popular 
-                      ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700' 
-                      : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
-                  } text-white`}
-                >
-                  {isAuthenticated ? 'Start Shipping Now' : 'Start Shipping Now'}
-                </Button>
               </CardContent>
             </Card>
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-gray-600 mb-4">Get instant quotes and track your packages in real-time. No hidden fees.</p>
+          <p className="text-gray-600 mb-6">Get instant quotes and track your packages in real-time. No hidden fees.</p>
+          <Button 
+            onClick={handleGetStarted}
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-3 text-lg font-semibold mb-4"
+          >
+            {isAuthenticated ? 'Start Shipping Now' : 'Start Shipping Now'}
+          </Button>
+          <br />
           <Button variant="outline" className="border-blue-200 hover:border-blue-300 hover:bg-blue-50">
             Get Instant Quote
           </Button>
