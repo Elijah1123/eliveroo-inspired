@@ -20,7 +20,10 @@ import {
   Edit,
   Trash2,
   UserPlus,
-  Plus
+  Plus,
+  FileText,
+  Truck,
+  BarChart3
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -432,6 +435,331 @@ const AdminDashboard = () => {
                   </Table>
                 </CardContent>
               </Card>
+            )}
+
+            {activeTab === "analytics" && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                    <CardHeader>
+                      <CardTitle>Revenue Analytics</CardTitle>
+                      <CardDescription>Monthly revenue trends</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-green-600">$12,456</div>
+                      <p className="text-sm text-muted-foreground">+18.3% from last month</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                    <CardHeader>
+                      <CardTitle>Order Volume</CardTitle>
+                      <CardDescription>Orders processed this month</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-blue-600">1,247</div>
+                      <p className="text-sm text-muted-foreground">+12.5% from last month</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                    <CardHeader>
+                      <CardTitle>Customer Satisfaction</CardTitle>
+                      <CardDescription>Average rating this month</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-3xl font-bold text-purple-600">4.8⭐</div>
+                      <p className="text-sm text-muted-foreground">+0.2 from last month</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>Performance Metrics</CardTitle>
+                    <CardDescription>Key performance indicators</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span>Delivery Success Rate</span>
+                          <span className="font-semibold">96.8%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-green-600 h-2 rounded-full" style={{ width: '96.8%' }}></div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span>Average Delivery Time</span>
+                          <span className="font-semibold">28 min</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-blue-600 h-2 rounded-full" style={{ width: '75%' }}></div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeTab === "reports" && (
+              <div className="space-y-6">
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>Report Generation</CardTitle>
+                    <CardDescription>Generate and download various reports</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <Button variant="outline" className="h-24 flex flex-col">
+                        <FileText className="w-8 h-8 mb-2" />
+                        <span>Monthly Sales Report</span>
+                      </Button>
+                      <Button variant="outline" className="h-24 flex flex-col">
+                        <Users className="w-8 h-8 mb-2" />
+                        <span>Customer Report</span>
+                      </Button>
+                      <Button variant="outline" className="h-24 flex flex-col">
+                        <Truck className="w-8 h-8 mb-2" />
+                        <span>Driver Performance</span>
+                      </Button>
+                      <Button variant="outline" className="h-24 flex flex-col">
+                        <Package className="w-8 h-8 mb-2" />
+                        <span>Order Analytics</span>
+                      </Button>
+                      <Button variant="outline" className="h-24 flex flex-col">
+                        <DollarSign className="w-8 h-8 mb-2" />
+                        <span>Revenue Report</span>
+                      </Button>
+                      <Button variant="outline" className="h-24 flex flex-col">
+                        <BarChart3 className="w-8 h-8 mb-2" />
+                        <span>Custom Report</span>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>Recent Reports</CardTitle>
+                    <CardDescription>Previously generated reports</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Report Name</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Generated Date</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>December Sales Report</TableCell>
+                          <TableCell>Sales</TableCell>
+                          <TableCell>2024-01-01</TableCell>
+                          <TableCell><Badge>Completed</Badge></TableCell>
+                          <TableCell>
+                            <Button variant="outline" size="sm">Download</Button>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Driver Performance Q4</TableCell>
+                          <TableCell>Performance</TableCell>
+                          <TableCell>2024-01-02</TableCell>
+                          <TableCell><Badge>Completed</Badge></TableCell>
+                          <TableCell>
+                            <Button variant="outline" size="sm">Download</Button>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeTab === "payments" && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                    <CardHeader>
+                      <CardTitle>Total Revenue</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-green-600">$45,678.90</div>
+                      <p className="text-sm text-muted-foreground">This month</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                    <CardHeader>
+                      <CardTitle>Pending Payments</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-orange-600">$2,345.67</div>
+                      <p className="text-sm text-muted-foreground">Awaiting processing</p>
+                    </CardContent>
+                  </Card>
+                  
+                  <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                    <CardHeader>
+                      <CardTitle>Failed Payments</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold text-red-600">$123.45</div>
+                      <p className="text-sm text-muted-foreground">Requires attention</p>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>Payment Transactions</CardTitle>
+                    <CardDescription>Recent payment activities</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Transaction ID</TableHead>
+                          <TableHead>Customer</TableHead>
+                          <TableHead>Amount</TableHead>
+                          <TableHead>Method</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Date</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>TXN001</TableCell>
+                          <TableCell>John Doe</TableCell>
+                          <TableCell>$25.99</TableCell>
+                          <TableCell>Credit Card</TableCell>
+                          <TableCell><Badge>Completed</Badge></TableCell>
+                          <TableCell>2024-01-26</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>TXN002</TableCell>
+                          <TableCell>Jane Smith</TableCell>
+                          <TableCell>$18.50</TableCell>
+                          <TableCell>PayPal</TableCell>
+                          <TableCell><Badge variant="secondary">Pending</Badge></TableCell>
+                          <TableCell>2024-01-26</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>TXN003</TableCell>
+                          <TableCell>Mike Wilson</TableCell>
+                          <TableCell>$32.75</TableCell>
+                          <TableCell>Credit Card</TableCell>
+                          <TableCell><Badge variant="destructive">Failed</Badge></TableCell>
+                          <TableCell>2024-01-25</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeTab === "settings" && (
+              <div className="space-y-6">
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>System Settings</CardTitle>
+                    <CardDescription>Configure system preferences</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">General Settings</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">Email Notifications</label>
+                            <Button variant="outline" size="sm">Configure</Button>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">SMS Notifications</label>
+                            <Button variant="outline" size="sm">Configure</Button>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">Auto-assign Orders</label>
+                            <Button variant="outline" size="sm">Enable</Button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold">Pricing Settings</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">Base Delivery Fee</label>
+                            <Input className="w-24" placeholder="$5.00" />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">Per Mile Rate</label>
+                            <Input className="w-24" placeholder="$1.50" />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <label className="text-sm font-medium">Rush Hour Multiplier</label>
+                            <Input className="w-24" placeholder="1.5x" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+                  <CardHeader>
+                    <CardTitle>User Management</CardTitle>
+                    <CardDescription>Manage admin users and permissions</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-sm font-medium">Admin Users</h4>
+                      <Button className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700">
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Add Admin
+                      </Button>
+                    </div>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Last Login</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>Admin User</TableCell>
+                          <TableCell>admin@example.com</TableCell>
+                          <TableCell><Badge>Super Admin</Badge></TableCell>
+                          <TableCell>2024-01-26</TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button variant="outline" size="sm">
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </div>
         </main>
