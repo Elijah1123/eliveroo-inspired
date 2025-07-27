@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
+import AddDriverModal from "@/components/AddDriverModal";
 import { 
   Users, 
   Package, 
@@ -21,6 +22,7 @@ import {
   UserPlus,
   Plus
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface User {
   id: string;
@@ -59,6 +61,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAddDriverModalOpen, setIsAddDriverModalOpen] = useState(false);
 
   // Mock data
   const [users, setUsers] = useState<User[]>([
@@ -107,6 +110,17 @@ const AdminDashboard = () => {
     setUsers(prev => prev.map(user => 
       user.id === userId ? { ...user, status: newStatus } : user
     ));
+  };
+
+  const addDriver = (newDriver: Driver) => {
+    setDrivers(prev => [...prev, newDriver]);
+  };
+
+  const deleteDriver = (driverId: string) => {
+    if (confirm("Are you sure you want to delete this driver?")) {
+      setDrivers(prev => prev.filter(driver => driver.id !== driverId));
+      toast.success("Driver deleted successfully!");
+    }
   };
 
   const filteredUsers = users.filter(user => 
@@ -360,7 +374,10 @@ const AdminDashboard = () => {
                       <CardTitle>Driver Management</CardTitle>
                       <CardDescription>Manage delivery drivers</CardDescription>
                     </div>
-                    <Button className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700">
+                    <Button 
+                      className="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700"
+                      onClick={() => setIsAddDriverModalOpen(true)}
+                    >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Driver
                     </Button>
@@ -399,7 +416,12 @@ const AdminDashboard = () => {
                               <Button variant="outline" size="sm">
                                 <Edit className="w-4 h-4" />
                               </Button>
-                              <Button variant="outline" size="sm">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => deleteDriver(driver.id)}
+                                className="hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                              >
                                 <Trash2 className="w-4 h-4" />
                               </Button>
                             </div>
@@ -414,6 +436,12 @@ const AdminDashboard = () => {
           </div>
         </main>
       </div>
+      
+      <AddDriverModal 
+        isOpen={isAddDriverModalOpen}
+        onClose={() => setIsAddDriverModalOpen(false)}
+        onAddDriver={addDriver}
+      />
     </div>
   );
 };
